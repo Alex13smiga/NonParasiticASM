@@ -122,3 +122,10 @@ Task_Man  db "Software\Microsoft\Windows\CurrentVersion\Policies\System",0x00
 Task_Man_Key db "disabletaskmgr",0x00
 szTitle   db  "Virus:",0x00
 szText   db  "Hello World!",0x00
+
+;.bss
+Virus_Handle dd 0x00000000
+Key_Handle  dd 0x00000000
+String_Length dd 0x00000000
+Virus_Path resb 260
+Sys_Dir resb 260
