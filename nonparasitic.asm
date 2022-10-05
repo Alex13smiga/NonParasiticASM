@@ -67,3 +67,10 @@ section .code USE32
  
     mov  esi,Sys_Dir    ;Calculate size of string and store in ECX
     xor  ecx,ecx
+
+Path_Size:
+    cmp  BYTE [esi],0x00
+    jz  done
+    inc  ecx
+    inc  esi
+    jmp  Path_Size
